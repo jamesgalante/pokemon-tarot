@@ -8,86 +8,124 @@
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --night: #120e1e;
-    --night-soft: #1c1630;
-    --gold: #d4af5a;
-    --gold-dim: #8a743f;
-    --parchment: #efe6d0;
-    --mist: #a99cc4;
+    --paper: #ede4cf;
+    --paper-bright: #f4edda;
+    --ink: #2b2118;
+    --sepia: #7a6a52;
+    --burgundy: #6d2233;
+    --burgundy-deep: #4e1724;
+    --gold: #8a6d2f;
+    --gold-bright: #c9a04e;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    background: radial-gradient(ellipse at 50% -20%, var(--night-soft), var(--night) 70%);
-    color: var(--parchment);
+    background: radial-gradient(ellipse at 50% -20%, var(--paper-bright), var(--paper) 70%);
+    color: var(--ink);
     font-family: "Cormorant Garamond", Georgia, serif;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 2.5rem 1rem 4rem;
+    padding: 3rem 1rem 5rem;
     text-align: center;
   }
   h1 {
     font-family: Cinzel, Georgia, serif;
     font-weight: 700;
-    font-size: clamp(1.7rem, 5vw, 2.8rem);
-    letter-spacing: 0.14em;
-    color: var(--gold);
+    font-size: clamp(1.7rem, 5vw, 2.6rem);
+    letter-spacing: 0.16em;
+    color: var(--ink);
     text-transform: uppercase;
   }
+  .rule {
+    width: min(220px, 50vw);
+    height: 1px;
+    margin: 1.4rem auto 0;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    border: none;
+  }
+  nav {
+    margin-top: 1.4rem;
+    display: flex;
+    gap: 2.2rem;
+    justify-content: center;
+  }
+  nav a {
+    font-family: Cinzel, serif;
+    font-size: 0.82rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--sepia);
+    text-decoration: none;
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid transparent;
+  }
+  nav a.active {
+    color: var(--ink);
+    border-bottom-color: var(--gold);
+  }
+  nav a:focus-visible { outline: 2px solid var(--ink); outline-offset: 4px; }
+  main { width: 100%; display: flex; flex-direction: column; align-items: center; }
+  .view { display: none; width: 100%; flex-direction: column; align-items: center; }
+  .view.active { display: flex; }
   .subtitle {
     font-style: italic;
-    color: var(--mist);
+    color: var(--sepia);
     font-size: 1.15rem;
-    margin-top: 0.5rem;
+    margin-top: 2.4rem;
   }
-  .packs {
-    margin-top: 1.6rem;
+
+  /* chips (packs + signs) */
+  .chips {
+    margin-top: 1.5rem;
     display: flex;
     flex-wrap: wrap;
     gap: 0.6rem;
     justify-content: center;
+    max-width: 640px;
   }
-  .pack {
+  .chip {
     font-family: Cinzel, serif;
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--mist);
-    border: 1px solid var(--gold-dim);
-    border-radius: 999px;
-    padding: 0.5rem 1.1rem;
+    color: var(--sepia);
+    border: 1px solid var(--gold);
+    border-radius: 0;
+    padding: 0.5rem 1.05rem;
     background: transparent;
     cursor: pointer;
   }
-  .pack[aria-pressed="true"] {
-    color: var(--night);
-    background: var(--gold);
-    border-color: var(--gold);
+  .chip[aria-pressed="true"] {
+    color: var(--paper-bright);
+    background: var(--ink);
+    border-color: var(--ink);
   }
-  .pack:focus-visible { outline: 3px solid var(--parchment); outline-offset: 3px; }
+  .chip:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
   .deck-count {
-    margin-top: 0.7rem;
+    margin-top: 0.9rem;
     font-style: italic;
-    color: var(--mist);
+    color: var(--sepia);
     font-size: 1rem;
   }
   .draw {
-    margin: 1.2rem 0 2.2rem;
+    margin: 1.4rem 0 2.4rem;
     font-family: Cinzel, serif;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     font-size: 0.9rem;
-    color: var(--night);
-    background: var(--gold);
+    color: var(--paper-bright);
+    background: var(--burgundy);
     border: none;
-    border-radius: 4px;
+    border-radius: 0;
     padding: 0.85rem 2.4rem;
     cursor: pointer;
   }
-  .draw:hover { background: #e5c470; }
-  .draw:focus-visible { outline: 3px solid var(--parchment); outline-offset: 3px; }
+  .draw:hover { background: #7f2a3d; }
+  .draw:disabled { opacity: 0.4; cursor: default; }
+  .draw:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 
+  /* cards */
   .spread {
     display: flex;
     gap: clamp(0.8rem, 3vw, 2.5rem);
@@ -122,19 +160,20 @@
     transition: transform 0.75s cubic-bezier(0.2, 0.7, 0.2, 1);
     cursor: pointer;
   }
+  .card.small { width: clamp(170px, 42vw, 235px); }
   .card.flipped { transform: rotateY(180deg); cursor: default; }
   .face {
     position: absolute;
     inset: 0;
     backface-visibility: hidden;
-    border-radius: 10px;
+    border-radius: 0;
     overflow: hidden;
   }
   .back {
-    border: 2px solid var(--gold-dim);
+    border: 2px solid var(--gold-bright);
     background:
-      repeating-conic-gradient(from 0deg at 50% 50%, var(--night-soft) 0deg 15deg, var(--night) 15deg 30deg);
-    box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+      repeating-conic-gradient(from 0deg at 50% 50%, var(--burgundy) 0deg 15deg, var(--burgundy-deep) 15deg 30deg);
+    box-shadow: inset 0 0 50px rgba(0,0,0,0.45);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -142,13 +181,12 @@
   .back .emblem {
     width: 34%;
     aspect-ratio: 1;
-    border: 2px solid var(--gold);
-    border-radius: 50%;
+    border: 2px solid var(--gold-bright);
     display: flex; align-items: center; justify-content: center;
     font-family: Cinzel, serif;
     font-size: clamp(1.3rem, 4vw, 2rem);
-    color: var(--gold);
-    background: var(--night);
+    color: var(--gold-bright);
+    background: var(--burgundy-deep);
   }
   .front {
     transform: rotateY(180deg);
@@ -188,10 +226,6 @@
     0%   { background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0% 0%; }
     100% { background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 100% 100%; }
   }
-  .caption .shiny-tag { color: #ffe066; }
-  @media (prefers-reduced-motion: reduce) {
-    .holo { animation: none; background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 50% 50%; }
-  }
   .caption {
     min-height: 2.4rem;
     font-size: 1.1rem;
@@ -199,41 +233,148 @@
     opacity: 0;
     transition: opacity 0.5s ease 0.35s;
   }
-  .card.flipped ~ .caption, .slot .caption.show { opacity: 1; }
-  .caption .rev {
-    font-style: italic;
-    color: var(--mist);
-  }
+  .caption.show { opacity: 1; }
+  .caption .rev { font-style: italic; color: var(--sepia); }
+  .shiny-tag { color: var(--gold); }
   .whisper {
     margin-top: 2.2rem;
     font-style: italic;
-    color: var(--mist);
+    color: var(--sepia);
     font-size: 1.05rem;
     min-height: 1.4rem;
   }
+
+  /* daily */
+  .daily-date {
+    margin-top: 2.4rem;
+    font-style: italic;
+    color: var(--sepia);
+    font-size: 1.15rem;
+  }
+  .signs { max-width: 560px; }
+  .daily-stage {
+    margin-top: 2.2rem;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.9rem;
+  }
+  .daily-stage.show { display: flex; }
+  .horoscope {
+    max-width: 34rem;
+    font-size: 1.2rem;
+    line-height: 1.55;
+    opacity: 0;
+    transition: opacity 0.6s ease 0.3s;
+    padding: 0 0.5rem;
+  }
+  .horoscope.show { opacity: 1; }
+  .horoscope .lucky {
+    display: block;
+    margin-top: 0.7rem;
+    font-style: italic;
+    color: var(--sepia);
+    font-size: 1.05rem;
+  }
+  footer {
+    margin-top: auto;
+    padding-top: 3rem;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: var(--sepia);
+    opacity: 0.8;
+  }
   @media (prefers-reduced-motion: reduce) {
-    .card, .slot, .caption { transition: none; }
+    .card, .slot, .caption, .horoscope { transition: none; }
+    .holo { animation: none; background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 50% 50%; }
   }
 </style>
 </head>
 <body>
-  <h1>Pokémon Tarot</h1>
-  <p class="subtitle">Hold your question in mind.</p>
+  <header>
+    <h1>Pokémon Tarot</h1>
+    <hr class="rule">
+    <nav>
+      <a href="#spread" id="nav-spread">The Spread</a>
+      <a href="#daily" id="nav-daily">The Daily</a>
+    </nav>
+  </header>
 
-  <div class="packs" id="packs" role="group" aria-label="Expansion packs"></div>
-  <p class="deck-count" id="deckCount"></p>
+  <main>
+    <section class="view" id="view-spread">
+      <p class="subtitle">Hold your question in mind.</p>
+      <div class="chips" id="packs" role="group" aria-label="Expansion packs"></div>
+      <p class="deck-count" id="deckCount"></p>
+      <button class="draw" id="drawBtn">Deal the cards</button>
+      <div class="spread" id="spread"></div>
+      <p class="whisper" id="whisper"></p>
+    </section>
 
-  <button class="draw" id="drawBtn">Deal the cards</button>
+    <section class="view" id="view-daily">
+      <p class="daily-date" id="dailyDate"></p>
+      <div class="chips signs" id="signs" role="group" aria-label="Zodiac signs"></div>
+      <div class="daily-stage" id="dailyStage">
+        <div class="card-slot" id="dailyCardSlot"></div>
+        <div class="caption" id="dailyCaption"></div>
+        <p class="horoscope" id="horoscope"></p>
+      </div>
+    </section>
+  </main>
 
-  <div class="spread" id="spread"></div>
-  <p class="whisper" id="whisper"></p>
+  <footer>A fan project. Cards remain the property of their rightful trainers.</footer>
 
 <script src="deck.js"></script>
 <script>
-  const POSITIONS = ["Past", "Present", "Future"];
   const REVERSAL_CHANCE = 1 / 3;
   // ?shiny=1 in the URL forces every card shiny (for demoing the effect)
-  const SHINY_CHANCE = new URLSearchParams(location.search).has("shiny") ? 1 : 0.001;
+  const FORCE_SHINY = new URLSearchParams(location.search).has("shiny");
+  const SHINY_CHANCE = FORCE_SHINY ? 1 : 0.001;
+  const KANTO = PACKS.find(p => p.id === "kanto").cards;
+
+  /* ---------- shared card element ---------- */
+  function makeCard(c, { reversed, shiny, small, label, onFlip }) {
+    const card = document.createElement("div");
+    card.className = "card" + (reversed ? " reversed" : "") + (shiny ? " shiny" : "") + (small ? " small" : "");
+    card.setAttribute("role", "button");
+    card.setAttribute("tabindex", "0");
+    card.setAttribute("aria-label", label);
+    card.innerHTML = `
+      <div class="face back"><div class="emblem">✦</div></div>
+      <div class="face front"><img src="${c.img}" alt="${c.name} card"><div class="holo"></div></div>`;
+    const flip = () => {
+      if (card.classList.contains("flipped")) return;
+      card.classList.add("flipped");
+      card.removeAttribute("role");
+      card.removeAttribute("tabindex");
+      onFlip();
+    };
+    card.addEventListener("click", flip);
+    card.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); flip(); }
+    });
+    return card;
+  }
+  function captionHTML(c, reversed, shiny) {
+    return `${shiny ? '<span class="shiny-tag">✨ </span>' : ""}${c.name}` +
+      `${reversed ? ' <span class="rev">— reversed</span>' : ""}` +
+      `${shiny ? ' <span class="shiny-tag">✨ shiny</span>' : ""}`;
+  }
+
+  /* ---------- navigation ---------- */
+  const views = { spread: document.getElementById("view-spread"), daily: document.getElementById("view-daily") };
+  const navs = { spread: document.getElementById("nav-spread"), daily: document.getElementById("nav-daily") };
+  function show(view) {
+    for (const k of Object.keys(views)) {
+      views[k].classList.toggle("active", k === view);
+      navs[k].classList.toggle("active", k === view);
+    }
+  }
+  function route() { show(location.hash === "#daily" ? "daily" : "spread"); }
+  window.addEventListener("hashchange", route);
+  route();
+
+  /* ---------- the spread ---------- */
+  const POSITIONS = ["Past", "Present", "Future"];
   const spread = document.getElementById("spread");
   const drawBtn = document.getElementById("drawBtn");
   const whisper = document.getElementById("whisper");
@@ -256,7 +397,7 @@
   }
   PACKS.forEach(p => {
     const btn = document.createElement("button");
-    btn.className = "pack";
+    btn.className = "chip";
     btn.textContent = p.name;
     btn.setAttribute("aria-pressed", enabled.has(p.id));
     btn.addEventListener("click", () => {
@@ -283,47 +424,161 @@
     const hand = POSITIONS.map(() => cards.splice(Math.floor(Math.random() * cards.length), 1)[0]);
 
     hand.forEach((c, i) => {
-      const reversedDraw = Math.random() < REVERSAL_CHANCE;
-      const shinyDraw = Math.random() < SHINY_CHANCE;
+      const reversed = Math.random() < REVERSAL_CHANCE;
+      const shiny = Math.random() < SHINY_CHANCE;
       const slot = document.createElement("div");
       slot.className = "slot";
-      slot.innerHTML = `
-        <div class="position">${POSITIONS[i]}</div>
-        <div class="card-slot">
-          <div class="card${reversedDraw ? " reversed" : ""}${shinyDraw ? " shiny" : ""}" role="button" tabindex="0"
-               aria-label="Reveal the ${POSITIONS[i]} card">
-            <div class="face back"><div class="emblem">✦</div></div>
-            <div class="face front"><img src="${c.img}" alt="${c.name} card"><div class="holo"></div></div>
-          </div>
-        </div>
-        <div class="caption"></div>`;
-      const card = slot.querySelector(".card");
-      const caption = slot.querySelector(".caption");
-
-      const flip = () => {
-        if (card.classList.contains("flipped")) return;
-        card.classList.add("flipped");
-        card.removeAttribute("role");
-        card.removeAttribute("tabindex");
-        caption.innerHTML =
-          `${shinyDraw ? '<span class="shiny-tag">✨ </span>' : ""}${c.name}` +
-          `${reversedDraw ? ' <span class="rev">— reversed</span>' : ""}` +
-          `${shinyDraw ? ' <span class="shiny-tag">✨ shiny</span>' : ""}`;
-        caption.classList.add("show");
-        revealed++;
-        if (revealed === 3) whisper.textContent = "The cards have spoken. The reading is yours.";
-      };
-      card.addEventListener("click", flip);
-      card.addEventListener("keydown", e => {
-        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); flip(); }
-      });
-
+      const pos = document.createElement("div");
+      pos.className = "position";
+      pos.textContent = POSITIONS[i];
+      const holder = document.createElement("div");
+      holder.className = "card-slot";
+      const caption = document.createElement("div");
+      caption.className = "caption";
+      holder.appendChild(makeCard(c, {
+        reversed, shiny, small: false,
+        label: `Reveal the ${POSITIONS[i]} card`,
+        onFlip: () => {
+          caption.innerHTML = captionHTML(c, reversed, shiny);
+          caption.classList.add("show");
+          revealed++;
+          if (revealed === 3) whisper.textContent = "The cards have spoken. The reading is yours.";
+        },
+      }));
+      slot.append(pos, holder, caption);
       spread.appendChild(slot);
       setTimeout(() => slot.classList.add("dealt"), 150 + i * 350);
     });
   }
-
   drawBtn.addEventListener("click", deal);
+
+  /* ---------- the daily ---------- */
+  const SIGNS = [
+    ["Aries", "♈"], ["Taurus", "♉"], ["Gemini", "♊"], ["Cancer", "♋"],
+    ["Leo", "♌"], ["Virgo", "♍"], ["Libra", "♎"], ["Scorpio", "♏"],
+    ["Sagittarius", "♐"], ["Capricorn", "♑"], ["Aquarius", "♒"], ["Pisces", "♓"],
+  ];
+  const OPENINGS = [
+    "The cards woke restless today.",
+    "A quiet current runs beneath the day.",
+    "The veil is thin this morning.",
+    "Today favors the patient and punishes the hasty.",
+    "The stars are in a generous mood.",
+    "An old question circles back today.",
+    "Today asks less than you fear and more than you'd like.",
+    "There is static in the air; small sparks matter.",
+    "The day opens like a slow tide.",
+    "Something set aside stirs and wants attention.",
+  ];
+  const UPRIGHT = [
+    "{name} stands upright for you: lead with your strongest move and don't apologize for it.",
+    "{name} appears upright — an ally arrives in a familiar shape; let them help.",
+    "Upright, {name} counsels boldness in one small, specific act.",
+    "{name} faces the light: what you've been practicing quietly is ready to be seen.",
+    "Upright, {name} says the obstacle is thinner than it looks; push.",
+    "{name} brings steady energy — protect your routine and it will protect you.",
+    "Upright, {name} favors honesty delivered gently.",
+    "{name} arrives upright: accept the invitation, even the strange one.",
+    "Upright, {name} marks a day for finishing rather than starting.",
+    "{name} stands with you — trust the first instinct, not the fourth thought.",
+  ];
+  const REVERSED = [
+    "{name} comes reversed: the strength you keep leaning on needs rest.",
+    "Reversed, {name} warns against forcing what wants to unfold on its own.",
+    "{name} arrives upside down — check whether the problem is the mirror.",
+    "Reversed, {name} counsels silence where you are tempted to strike.",
+    "{name} reversed: an old habit wears a new costume today. Name it.",
+    "Reversed, {name} asks you to put down what was never yours to carry.",
+    "{name} inverted — postpone the big decision; the light is bad.",
+    "Reversed, {name} says the shortcut costs more than the long road.",
+    "{name} reversed: apologize first, explain second.",
+    "Reversed, {name} finds you guarding a door no one is trying to open.",
+  ];
+  const CLOSINGS = [
+    "Say yes before noon; promise nothing after dusk.",
+    "Drink more water than you think you need.",
+    "A message you almost don't send is the one that matters.",
+    "Step outside at golden hour.",
+    "Keep a coin in your left pocket.",
+    "Text the friend you thought of just now.",
+    "Take the long way home once.",
+    "Let the phone ring twice before you answer.",
+    "Leave one thing unfinished on purpose.",
+    "Reread something you wrote a year ago.",
+  ];
+
+  function hashStr(s) {
+    let h = 2166136261;
+    for (const ch of s) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619); }
+    return h >>> 0;
+  }
+  function mulberry32(a) {
+    return function () {
+      a |= 0; a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  const now = new Date();
+  const dateKey = now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, "0") + "-" + String(now.getDate()).padStart(2, "0");
+  document.getElementById("dailyDate").textContent =
+    now.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+
+  const signsEl = document.getElementById("signs");
+  const dailyStage = document.getElementById("dailyStage");
+  const dailyCardSlot = document.getElementById("dailyCardSlot");
+  const dailyCaption = document.getElementById("dailyCaption");
+  const horoscope = document.getElementById("horoscope");
+  let selectedSign = localStorage.getItem("tarot-sign");
+  const signBtns = {};
+
+  function renderDaily(sign) {
+    selectedSign = sign;
+    localStorage.setItem("tarot-sign", sign);
+    for (const [name] of SIGNS) signBtns[name].setAttribute("aria-pressed", name === sign);
+
+    const rng = mulberry32(hashStr(dateKey + "|" + sign));
+    const c = KANTO[Math.floor(rng() * KANTO.length)];
+    const reversed = rng() < REVERSAL_CHANCE;
+    const shiny = FORCE_SHINY || rng() < SHINY_CHANCE;
+    const pick = arr => arr[Math.floor(rng() * arr.length)];
+    const lucky = 1 + Math.floor(rng() * 98);
+
+    dailyCardSlot.innerHTML = "";
+    dailyCaption.innerHTML = "";
+    dailyCaption.classList.remove("show");
+    horoscope.classList.remove("show");
+    dailyStage.classList.add("show");
+
+    const text =
+      `${pick(OPENINGS)} ${pick(reversed ? REVERSED : UPRIGHT).replaceAll("{name}", c.name)} ${pick(CLOSINGS)}` +
+      `${shiny ? " ✨ A shiny crosses your path — today is no ordinary day." : ""}` +
+      `<span class="lucky">Lucky number: ${lucky}.</span>`;
+
+    dailyCardSlot.appendChild(makeCard(c, {
+      reversed, shiny, small: true,
+      label: `Reveal the card of the day for ${sign}`,
+      onFlip: () => {
+        dailyCaption.innerHTML = captionHTML(c, reversed, shiny);
+        dailyCaption.classList.add("show");
+        horoscope.innerHTML = text;
+        horoscope.classList.add("show");
+      },
+    }));
+  }
+
+  SIGNS.forEach(([name, glyph]) => {
+    const btn = document.createElement("button");
+    btn.className = "chip";
+    btn.textContent = `${glyph} ${name}`;
+    btn.setAttribute("aria-pressed", "false");
+    btn.addEventListener("click", () => renderDaily(name));
+    signBtns[name] = btn;
+    signsEl.appendChild(btn);
+  });
+  if (selectedSign && signBtns[selectedSign]) renderDaily(selectedSign);
 </script>
 </body>
 </html>

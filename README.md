@@ -15,6 +15,9 @@ up to the reader.
 - Each card has a 1-in-3 chance of being dealt **reversed**.
 - Each card has a 0.1% chance of being **✨ shiny** — an animated holographic foil.
   (Append `?shiny=1` to the URL to preview the effect.)
+- **The Daily**: pick your zodiac sign for a card of the day and a short horoscope.
+  It is deterministic — everyone with your sign draws the same card on the same
+  date — and yes, some days are shiny days.
 
 ## Tech
 
