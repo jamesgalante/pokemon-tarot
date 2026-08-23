@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pokémon Tarot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --night: #120e1e;
+    --night-soft: #1c1630;
+    --gold: #d4af5a;
+    --gold-dim: #8a743f;
+    --parchment: #efe6d0;
+    --mist: #a99cc4;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: radial-gradient(ellipse at 50% -20%, var(--night-soft), var(--night) 70%);
+    color: var(--parchment);
+    font-family: "Cormorant Garamond", Georgia, serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2.5rem 1rem 4rem;
+    text-align: center;
+  }
+  h1 {
+    font-family: Cinzel, Georgia, serif;
+    font-weight: 700;
+    font-size: clamp(1.7rem, 5vw, 2.8rem);
+    letter-spacing: 0.14em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .subtitle {
+    font-style: italic;
+    color: var(--mist);
+    font-size: 1.15rem;
+    margin-top: 0.5rem;
+  }
+  .packs {
+    margin-top: 1.6rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    justify-content: center;
+  }
+  .pack {
+    font-family: Cinzel, serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mist);
+    border: 1px solid var(--gold-dim);
+    border-radius: 999px;
+    padding: 0.5rem 1.1rem;
+    background: transparent;
+    cursor: pointer;
+  }
+  .pack[aria-pressed="true"] {
+    color: var(--night);
+    background: var(--gold);
+    border-color: var(--gold);
+  }
+  .pack:focus-visible { outline: 3px solid var(--parchment); outline-offset: 3px; }
+  .deck-count {
+    margin-top: 0.7rem;
+    font-style: italic;
+    color: var(--mist);
+    font-size: 1rem;
+  }
+  .draw {
+    margin: 1.2rem 0 2.2rem;
+    font-family: Cinzel, serif;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    color: var(--night);
+    background: var(--gold);
+    border: none;
+    border-radius: 4px;
+    padding: 0.85rem 2.4rem;
+    cursor: pointer;
+  }
+  .draw:hover { background: #e5c470; }
+  .draw:focus-visible { outline: 3px solid var(--parchment); outline-offset: 3px; }
+
+  .spread {
+    display: flex;
+    gap: clamp(0.8rem, 3vw, 2.5rem);
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 1100px;
+  }
+  .slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.7rem;
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .slot.dealt { opacity: 1; transform: none; }
+  .position {
+    font-family: Cinzel, serif;
+    letter-spacing: 0.3em;
+    font-size: clamp(0.7rem, 2vw, 0.95rem);
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .card-slot { perspective: 1400px; }
+  .card {
+    width: clamp(150px, 27vw, 290px);
+    aspect-ratio: 63 / 88;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.75s cubic-bezier(0.2, 0.7, 0.2, 1);
+    cursor: pointer;
+  }
+  .card.flipped { transform: rotateY(180deg); cursor: default; }
+  .face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .back {
+    border: 2px solid var(--gold-dim);
+    background:
+      repeating-conic-gradient(from 0deg at 50% 50%, var(--night-soft) 0deg 15deg, var(--night) 15deg 30deg);
+    box-shadow: inset 0 0 50px rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .back .emblem {
+    width: 34%;
+    aspect-ratio: 1;
+    border: 2px solid var(--gold);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: Cinzel, serif;
+    font-size: clamp(1.3rem, 4vw, 2rem);
+    color: var(--gold);
+    background: var(--night);
+  }
+  .front {
+    transform: rotateY(180deg);
+    background: #000;
+  }
+  .front img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .card.reversed .front img { transform: rotate(180deg); }
+  .holo {
+    position: absolute;
+    inset: 0;
+    display: none;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(255,255,255,0.9) 0 1.5px, transparent 2.5px),
+      radial-gradient(circle at 70% 15%, rgba(255,255,255,0.9) 0 1px, transparent 2px),
+      radial-gradient(circle at 45% 60%, rgba(255,255,255,0.9) 0 1.5px, transparent 2.5px),
+      radial-gradient(circle at 85% 75%, rgba(255,255,255,0.9) 0 1px, transparent 2px),
+      radial-gradient(circle at 15% 85%, rgba(255,255,255,0.9) 0 1px, transparent 2px),
+      linear-gradient(115deg,
+        transparent 15%,
+        rgba(255, 60, 255, 0.45) 30%,
+        rgba(60, 255, 255, 0.45) 45%,
+        rgba(255, 255, 80, 0.4) 60%,
+        rgba(120, 60, 255, 0.45) 75%,
+        transparent 90%);
+    background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 320% 320%;
+    mix-blend-mode: color-dodge;
+    animation: holo-sweep 3.2s linear infinite;
+  }
+  .card.shiny .holo { display: block; }
+  @keyframes holo-sweep {
+    0%   { background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0% 0%; }
+    100% { background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 100% 100%; }
+  }
+  .caption .shiny-tag { color: #ffe066; }
+  @media (prefers-reduced-motion: reduce) {
+    .holo { animation: none; background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 50% 50%; }
+  }
+  .caption {
+    min-height: 2.4rem;
+    font-size: 1.1rem;
+    line-height: 1.25;
+    opacity: 0;
+    transition: opacity 0.5s ease 0.35s;
+  }
+  .card.flipped ~ .caption, .slot .caption.show { opacity: 1; }
+  .caption .rev {
+    font-style: italic;
+    color: var(--mist);
+  }
+  .whisper {
+    margin-top: 2.2rem;
+    font-style: italic;
+    color: var(--mist);
+    font-size: 1.05rem;
+    min-height: 1.4rem;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .card, .slot, .caption { transition: none; }
+  }
+</style>
+</head>
+<body>
+  <h1>Pokémon Tarot</h1>
+  <p class="subtitle">Hold your question in mind.</p>
+
+  <div class="packs" id="packs" role="group" aria-label="Expansion packs"></div>
+  <p class="deck-count" id="deckCount"></p>
+
+  <button class="draw" id="drawBtn">Deal the cards</button>
+
+  <div class="spread" id="spread"></div>
+  <p class="whisper" id="whisper"></p>
+
+<script src="deck.js"></script>
+<script>
+  const POSITIONS = ["Past", "Present", "Future"];
+  const REVERSAL_CHANCE = 1 / 3;
+  // ?shiny=1 in the URL forces every card shiny (for demoing the effect)
+  const SHINY_CHANCE = new URLSearchParams(location.search).has("shiny") ? 1 : 0.001;
+  const spread = document.getElementById("spread");
+  const drawBtn = document.getElementById("drawBtn");
+  const whisper = document.getElementById("whisper");
+  const packsEl = document.getElementById("packs");
+  const deckCount = document.getElementById("deckCount");
+  let revealed = 0;
+
+  let enabled;
+  try { enabled = new Set(JSON.parse(localStorage.getItem("tarot-packs"))); } catch (e) {}
+  if (!enabled || !enabled.size) enabled = new Set(["kanto"]);
+
+  function pool() {
+    return PACKS.filter(p => enabled.has(p.id)).flatMap(p => p.cards);
+  }
+  function refresh() {
+    const n = pool().length;
+    deckCount.textContent = `${n} cards in the deck`;
+    drawBtn.disabled = n < 3;
+    localStorage.setItem("tarot-packs", JSON.stringify([...enabled]));
+  }
+  PACKS.forEach(p => {
+    const btn = document.createElement("button");
+    btn.className = "pack";
+    btn.textContent = p.name;
+    btn.setAttribute("aria-pressed", enabled.has(p.id));
+    btn.addEventListener("click", () => {
+      if (enabled.has(p.id)) {
+        if (enabled.size === 1) return; // keep at least one pack in play
+        enabled.delete(p.id);
+      } else {
+        enabled.add(p.id);
+      }
+      btn.setAttribute("aria-pressed", enabled.has(p.id));
+      refresh();
+    });
+    packsEl.appendChild(btn);
+  });
+  refresh();
+
+  function deal() {
+    spread.innerHTML = "";
+    whisper.textContent = "";
+    revealed = 0;
+    drawBtn.textContent = "Deal again";
+
+    const cards = pool();
+    const hand = POSITIONS.map(() => cards.splice(Math.floor(Math.random() * cards.length), 1)[0]);
+
+    hand.forEach((c, i) => {
+      const reversedDraw = Math.random() < REVERSAL_CHANCE;
+      const shinyDraw = Math.random() < SHINY_CHANCE;
+      const slot = document.createElement("div");
+      slot.className = "slot";
+      slot.innerHTML = `
+        <div class="position">${POSITIONS[i]}</div>
+        <div class="card-slot">
+          <div class="card${reversedDraw ? " reversed" : ""}${shinyDraw ? " shiny" : ""}" role="button" tabindex="0"
+               aria-label="Reveal the ${POSITIONS[i]} card">
+            <div class="face back"><div class="emblem">✦</div></div>
+            <div class="face front"><img src="${c.img}" alt="${c.name} card"><div class="holo"></div></div>
+          </div>
+        </div>
+        <div class="caption"></div>`;
+      const card = slot.querySelector(".card");
+      const caption = slot.querySelector(".caption");
+
+      const flip = () => {
+        if (card.classList.contains("flipped")) return;
+        card.classList.add("flipped");
+        card.removeAttribute("role");
+        card.removeAttribute("tabindex");
+        caption.innerHTML =
+          `${shinyDraw ? '<span class="shiny-tag">✨ </span>' : ""}${c.name}` +
+          `${reversedDraw ? ' <span class="rev">— reversed</span>' : ""}` +
+          `${shinyDraw ? ' <span class="shiny-tag">✨ shiny</span>' : ""}`;
+        caption.classList.add("show");
+        revealed++;
+        if (revealed === 3) whisper.textContent = "The cards have spoken. The reading is yours.";
+      };
+      card.addEventListener("click", flip);
+      card.addEventListener("keydown", e => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); flip(); }
+      });
+
+      spread.appendChild(slot);
+      setTimeout(() => slot.classList.add("dealt"), 150 + i * 350);
+    });
+  }
+
+  drawBtn.addEventListener("click", deal);
+</script>
+</body>
+</html>
