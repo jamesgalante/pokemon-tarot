@@ -108,8 +108,23 @@
     color: var(--sepia);
     font-size: 1rem;
   }
+  .packs-footer {
+    margin-top: 3.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .packs-footer .rule { margin: 0 auto 1.4rem; }
+  .packs-label {
+    font-family: Cinzel, serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--sepia);
+  }
+  .packs-footer .chips { margin-top: 0.9rem; }
   .draw {
-    margin: 1.4rem 0 2.4rem;
+    margin: 2rem 0 2.4rem;
     font-family: Cinzel, serif;
     letter-spacing: 0.18em;
     text-transform: uppercase;
@@ -303,11 +318,15 @@
   <main>
     <section class="view" id="view-spread">
       <p class="subtitle">Hold your question in mind.</p>
-      <div class="chips" id="packs" role="group" aria-label="Expansion packs"></div>
-      <p class="deck-count" id="deckCount"></p>
       <button class="draw" id="drawBtn">Deal the cards</button>
       <div class="spread" id="spread"></div>
       <p class="whisper" id="whisper"></p>
+      <div class="packs-footer">
+        <hr class="rule">
+        <p class="packs-label">Expansions</p>
+        <div class="chips" id="packs" role="group" aria-label="Expansion packs"></div>
+        <p class="deck-count" id="deckCount"></p>
+      </div>
     </section>
 
     <section class="view" id="view-daily">
